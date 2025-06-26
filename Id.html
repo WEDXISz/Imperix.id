@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de ID</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #4f46e5;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #6366f1;
+      color: white;
+    }
+
+    input.id-input {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Sistema de Cadastro com ID</h2>
+
+  <form id="formPessoa">
+    <input type="text" id="nome" placeholder="Nome" required>
+    <input type="number" id="idade" placeholder="Idade" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <button type="submit">Adicionar</button>
+  </form>
+
+  <table id="tabela">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Idade</th>
+        <th>Email</th>
+        <th>ID da Pessoa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Dados vão aparecer aqui -->
+    </tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById("formPessoa");
+    const tabela = document.querySelector("#tabela tbody");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value.trim();
+      const idade = document.getElementById("idade").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      if (!nome || !idade || !email) return;
+
+      const novaLinha = document.createElement("tr");
+
+      novaLinha.innerHTML = `
+        <td>${nome}</td>
+        <td>${idade}</td>
+        <td>${email}</td>
+        <td><input type="text" class="id-input" placeholder="Digite o ID"></td>
+      `;
+
+      tabela.appendChild(novaLinha);
+
+      form.reset();
+    });
+  </script>
+</body>
+</html>

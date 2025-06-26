@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Cadastro Premium</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-top: 10px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .contador-box {
+      background-color: #4f46e5;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-ver-ids {
+      background-color: #10b981;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 14px;
+    }
+
+    .btn-ver-ids:hover {
+      background-color: #059669;
+    }
+
+    #listaIds {
+      display: none;
+      margin: 0 auto 20px;
+      padding: 15px;
+      background: white;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    #listaIds h3 {
+      margin-bottom: 10px;
+      color: #4f46e5;
+    }
+
+    #listaIds ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    #listaIds li {
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    input, button {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      padding: 15px 20px;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .value, .edit-field {
+      color: #222;
+    }
+
+    .id-input {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      font-size: 14px;
+      margin-top: 5px;
+      width: 100%;
+    }
+
+    .edit-button {
+      margin-top: 10px;
+      padding: 8px;
+      font-size: 14px;
+      background-color: #10b981;
+      transition: 0.2s;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .edit-button:hover {
+      background-color: #059669;
+    }
+
+    .edit-field {
+      width: 100%;
+      padding: 6px;
+      margin-top: 2px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>ID IMPERIX</h2>
+
+  <div class="top-bar">
+    <div class="contador-box" id="contadorSalvos">💾 Pessoas salvas: 0</div>
+    <button class="btn-ver-ids" onclick="mostrarListaIds()">📋 Ver IDs salvos</button>
+  </div>
+
+  <div id="listaIds">
+    <h3>📋 Lista de IDs Salvos:</h3>
+    <ul id="idsUl"></ul>
+  </div>
+
+  <form id="formPessoa">
+    <input type="text" id="nome" placeholder="Nome" required>
+    <input type="number" id="idade" placeholder="Idade" required>
+    <input type="email" id="email" placeholder="E-mail" required>
+    <button type="submit">Adicionar</button>
+  </form>
+
+  <div class="cards-container" id="cardsContainer"></div>
+
+  <script>
+    const form = document.getElementById("formPessoa");
+    const cardsContainer = document.getElementById("cardsContainer");
+    const contadorEl = document.getElementById("contadorSalvos");
+    const idsUl = document.getElementById("idsUl");
+    const listaIdsDiv = document.getElementById("listaIds");
+
+    let contadorSalvos = 0;
+    let pessoasSalvas = []; // [{ nome: "João", id: "001" }, ...]
+
+    function atualizarContador() {
+      contadorEl.textContent = `💾 Pessoas salvas: ${contadorSalvos}`;
+    }
+
+    function mostrarListaIds() {
+      listaIdsDiv.style.display = listaIdsDiv.style.display === "none" ? "block" : "none";
+      idsUl.innerHTML = "";
+
+      if (pessoasSalvas.length === 0) {
+        idsUl.innerHTML = "<li>Nenhum ID salvo ainda.</li>";
+      } else {
+        pessoasSalvas.forEach((p, index) => {
+          idsUl.innerHTML += `<li><strong>${index + 1}.</strong> ${p.nome} — ID: ${p.id}</li>`;
+        });
+      }
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value.trim();
+      const idade = document.getElementById("idade").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      if (!nome || !idade || !email) return;
+
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.setAttribute("data-salvo", "false");
+
+      card.innerHTML = `
+        <div><span class="label">Nome:</span> <span class="value nome">${nome}</span></div>
+        <div><span class="label">Idade:</span> <span class="value idade">${idade}</span></div>
+        <div><span class="label">E-mail:</span> <span class="value email">${email}</span></div>
+        <div>
+          <span class="label">ID:</span>
+          <input type="text" class="id-input" placeholder="Digite o ID da pessoa">
+        </div>
+        <button class="edit-button">✏️ Editar informações</button>
+      `;
+
+      const editButton = card.querySelector(".edit-button");
+
+      editButton.addEventListener("click", () => {
+        const nomeEl = card.querySelector(".nome");
+        const idadeEl = card.querySelector(".idade");
+        const emailEl = card.querySelector(".email");
+        const idInput = card.querySelector(".id-input");
+        const salvo = card.getAttribute("data-salvo") === "true";
+
+        if (editButton.textContent.includes("Editar")) {
+          nomeEl.outerHTML = `<input type="text" class="edit-field nome" value="${nomeEl.textContent}">`;
+          idadeEl.outerHTML = `<input type="number" class="edit-field idade" value="${idadeEl.textContent}">`;
+          emailEl.outerHTML = `<input type="email" class="edit-field email" value="${emailEl.textContent}">`;
+          editButton.textContent = "💾 Salvar";
+        } else {
+          const nomeInput = card.querySelector(".nome");
+          const idadeInput = card.querySelector(".idade");
+          const emailInput = card.querySelector(".email");
+          const nomeNovo = nomeInput.value;
+          const idadeNova = idadeInput.value;
+          const emailNovo = emailInput.value;
+          const idValor = idInput.value.trim();
+
+          if (!idValor) {
+            alert("⚠️ Por favor, insira um ID antes de salvar.");
+            return;
+          }
+
+          if (!salvo && pessoasSalvas.some(p => p.id === idValor)) {
+            alert("⚠️ Este ID já foi salvo anteriormente!");
+            return;
+          }
+
+          nomeInput.outerHTML = `<span class="value nome">${nomeNovo}</span>`;
+          idadeInput.outerHTML = `<span class="value idade">${idadeNova}</span>`;
+          emailInput.outerHTML = `<span class="value email">${emailNovo}</span>`;
+          editButton.textContent = "✏️ Editar informações";
+
+          if (!salvo) {
+            card.setAttribute("data-salvo", "true");
+            contadorSalvos++;
+            pessoasSalvas.push({ nome: nomeNovo, id: idValor });
+            atualizarContador();
+          }
+        }
+      });
+
+      cardsContainer.appendChild(card);
+      form.reset();
+    });
+  </script>
+</body>
+</html>
